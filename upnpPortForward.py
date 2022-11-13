@@ -22,7 +22,7 @@ def updateIPs():
     '''
     try:
         global hostIP,externalIP
-        data = subprocess.check_output(f'executableFiles/{upnp_cmd} -e ajs -l', shell=True, universal_newlines=True, text=True)
+        data = subprocess.check_output(f'{upnp_cmd} -e ajs -l', shell=True, universal_newlines=True, text=True)
         data = data.split('\n')
         for line in data: # get local and public ips
             if 'Local LAN ip address' in line: hostIP=(line.strip().split(' ')[-1])
@@ -34,7 +34,7 @@ def addPortForward(internal_port, external_port, protocol='tcp'):
     updateIPs()
     try:
         clrprint('Adding UPnP Port forward rule...', clr='p')
-        data = subprocess.check_output(f'executableFiles/{upnp_cmd} -e ajs -a {hostIP} {internal_port} {external_port} {protocol}').decode()
+        data = subprocess.check_output(f'{upnp_cmd} -e ajs -a {hostIP} {internal_port} {external_port} {protocol}').decode()
         data = data.strip().split('\n')[-1]
         clrprint(data, clr='g')
     except Exception as e: clrprint('')
@@ -43,7 +43,7 @@ def removePortForward(external_port,  protocol):
     clrprint('Removing UPnP Port forward rule...', clr='p')
     updateIPs()
     try:
-        data = subprocess.check_output(f'executableFiles/{upnp_cmd} -e ajs -d {external_port} {protocol}').decode()
+        data = subprocess.check_output(f'{upnp_cmd} -e ajs -d {external_port} {protocol}').decode()
         data = data.strip().split('\n')[-1]
         if 'returned : 0' in data: clrprint(f'Port {external_port} is removed from port forwarding table.',clr='g')
     except subprocess.CalledProcessError as exc:
@@ -51,7 +51,7 @@ def removePortForward(external_port,  protocol):
 
 def listTable():
     clrprint('Getting Port forward table list.',clr='p')
-    data = subprocess.check_output(f'executableFiles/{upnp_cmd} -e ajs -l').decode()
+    data = subprocess.check_output(f'{upnp_cmd} -e ajs -l').decode()
     if '->' in data:
         clrprint('UPNP Port Forward Table: ', clr='y')
         for line in data.split('\n'):
